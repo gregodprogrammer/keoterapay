@@ -29,6 +29,12 @@ This section exists so that as the project grows beyond a single contributor, no
 ---
 
 ## Where We Stopped
+
+**Session paused 2026-06-26.**
+
+- `schema.sql` written to repo root as a baseline snapshot of the live schema (5 tables, all constraints, all RLS policies). Verified via Docker Postgres 17 execution — all CREATE TABLE and ALTER TABLE statements passed; auth.uid() errors in RLS policies are expected and harmless in vanilla Postgres. SHA-256: `a335d78f133d9510fe111386fcaddd861f27bc8a1e192944b833422a063603af`. **Approved by team lead.**
+- `supabase/migrations/20260626000000_add_mandates_and_profiles.sql` drafted (Phase 6: mandates table, profiles table, subscriptions alterations, handle_new_user trigger). SHA-256: `83a2c996ccff800c90ebd0e1a2f29840211b8fc1770853cbae777b4c2dbbba5f`. **NOT yet reviewed line-by-line by team lead. NOT yet run against any database, real or test. Next steps when resuming: (1) review migration file chunk-by-chunk against brief sections 3 and 6, (2) run Docker syntax check (schema.sql then migration in sequence), (3) run against live Supabase only after both are approved.**
+
 ---
 
 ## Completion log — what the team lead has actually approved, and when

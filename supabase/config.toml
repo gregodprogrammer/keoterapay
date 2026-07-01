@@ -1,0 +1,6 @@
+project_id = "nomba-checkout-recurring"
+
+[functions.nomba-webhook]
+verify_jwt = false
+[functions.charge-subscriptions]
+verify_jwt = false
