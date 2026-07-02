@@ -1,0 +1,6 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0B1220; color: #F2EFE9; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+input { outline: none; }
+input:focus { border-color: #CCA300 !important; }
+button { font-family: inherit; }
+a { color: #E8C766; }
