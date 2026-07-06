@@ -1,6 +1,6 @@
 # KeoteraPay — Project State File
 # READ THIS FIRST IN ANY NEW SESSION, REGARDLESS OF MODEL OR INTERFACE.
-# Last updated: 2026-07-01
+# Last updated: 2026-07-06
 
 ---
 
@@ -46,12 +46,12 @@ Supabase project ref: gaivftcuqhlffwzdnljv. Repo: ~/nomba-checkout.
 
 ## WHAT IS CONFIRMED DONE (do not redo, do not re-verify)
 
-All three Edge Functions deployed and live-verified against real Nomba sandbox:
+All three Edge Functions deployed and live-verified against real Nomba production:
 
 | File | Status | Key evidence |
 |---|---|---|
-| supabase/functions/create-checkout/index.ts | ✅ Deployed | Real checkoutLink returned, sandbox page loaded visually |
-| supabase/functions/nomba-webhook/index.ts | ✅ Deployed, reachable | curl returns 405 (correct), verify_jwt=false confirmed |
+| supabase/functions/create-checkout/index.ts | ✅ Deployed | Real checkoutLink returned, sandbox/prod page loaded visually |
+| supabase/functions/nomba-webhook/index.ts | ✅ Deployed, verified | PRODUCTION WEBHOOK VERIFIED. HMAC-SHA256 signature matched real payload. |
 | supabase/functions/charge-subscriptions/index.ts | ✅ Deployed, secured | Correct secret→200, wrong secret→401, real trigger tested |
 | supabase/config.toml | ✅ In place | verify_jwt=false for nomba-webhook and charge-subscriptions |
 | schema.sql | ✅ Approved baseline | Docker Postgres test passed, 5 tables confirmed, SHA-256: a335d78f133d9510fe111386fcaddd861f27bc8a1e192944b833422a063603af |
@@ -60,26 +60,14 @@ Database: 5 tables live with RLS (plans, payment_methods, subscriptions, charges
 Supabase uses NEW key format: publishable (sb_publishable_...) and secret (sb_secret_...).
 SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are auto-injected into Edge Functions — do NOT set them as secrets.
 
+**Production Webhook Reconciliation:** Confirmed via real ₦100 payment. Signature matched, card tokenKey successfully written to `payment_methods`, and `charges` status updated to `successful`.
+
 ---
 
 ## WHAT IS STILL OPEN (genuinely incomplete)
 
-1. WEBHOOK SIGNATURE — not yet verified against a real delivered payload.
-   Still blocked on Nomba sandbox authorization (Google Form submitted, no response).
-   Plan: switch to production credentials for one real ₦100 test payment.
-   This is the LAST remaining backend piece.
-
-2. PRODUCTION WEBHOOK TEST — one real payment on production to confirm:
-   - Real payment_success event arrives at the webhook URL
-   - Signature verification works against real payload
-   - Real tokenKey gets written to payment_methods
-   Credentials: team lead has production client_id, client_secret, accountId.
-   Amount: ₦100 (safe above any unstated minimum, fee ≈ ₦1.40).
-   Requires: update NOMBA_BASE_URL to https://api.nomba.com, set production credentials
-   as Supabase secrets, register webhook URL on production Nomba dashboard.
-
-3. FRONTEND — not started. See claude-code-frontend-brief.md for full spec.
-   This is the current active priority — deadline July 3rd 11:59 PM GMT+1.
+1. FRONTEND — in progress. See claude-code-frontend-brief.md for full spec.
+   Basic dashboard and checkout flow implemented, but final polish and edge cases remain.
 
 ---
 
@@ -97,16 +85,3 @@ SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are auto-injected into Edge Functions
 | Webhook signature | Colon-joined fields, HMAC-SHA256, base64. Confirmed from 4 independent sources. |
 | No mandate webhook | Mandate events do NOT exist in Nomba's webhook system — poll status instead |
 | Supabase JWT gate | verify_jwt=false required for webhook + cron functions or they silently 401 |
-
----
-
-## WHAT TO DO FIRST IN ANY NEW SESSION
-
-1. Read this file fully.
-2. Read PROGRESS_TRACKER.md "Where We Stopped" and "Completion log" sections.
-3. Read claude-code-frontend-brief.md if working on frontend.
-4. Confirm you understand the scope locks and guardrails.
-5. Propose only the single next step. Wait for approval before touching anything.
-
-Do not assume, infer, or proceed without confirmation.
-The team lead is the only person who can say a step is done.
